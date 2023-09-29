@@ -1,0 +1,114 @@
+const User = require('../models/user');
+const jwt = require('jsonwebtoken');
+const passport = require('passport');
+const config = require('../config');
+const dayjs = require('dayjs');
+
+const signup = async (req, res) => {
+  try {
+    const { userId } = res.locals.user;
+    const { name, adress, phone } = res.body;
+
+    const user = await User.findByPk(userId);
+
+    if (user.isSubmit == true) {
+      res.json({
+        success: 'true',
+        step: 3,
+        message: 'Submission completed',
+      });
+    }
+
+    user.name = name;
+    user.adress = adress;
+    user.phone = phone;
+    user.isSignup = true;
+    user.updatedAt = dayjs().toDate();
+
+    User.save();
+
+    const options = {
+      expiresIn: config.jwt.expiresIn,
+    };
+    const signupToken = jwt.sign(userId, config.jwt.signUpSecretKey, options);
+
+    res.status(201).json({
+      success: 'true',
+      step: 2,
+      message: 'Sign up completed',
+      data: {
+        signupToken,
+      },
+    });
+  } catch (ex) {
+    res.status(400).json({
+      success: 'false',
+      message: ex.message,
+    });
+  }
+};
+
+const isLogin = async (req, res) => {
+  try {
+    res.status(200).json({
+      success: 'true',
+      step: 1,
+      message: 'Login completed',
+    });
+  } catch (ex) {
+    console.log(ex);
+    res.status(401).json({
+      success: 'false',
+      message: 'Authorization Exception',
+    });
+  }
+};
+
+const kakaoCallback = (req, res, next) => {
+  passport.authenticate('kakao', { failureRedirect: '/' }, (err, user) => {
+    if (err) return next(err);
+
+    const options = {
+      expiresIn: config.jwt.expiresIn,
+    };
+    const payload = { userId: user.userId };
+
+    if (user.isSubmit == true) {
+      return res.json({
+        success: 'true',
+        step: 3,
+        message: 'Submission completed',
+      });
+    }
+
+    if (user.isSignup == true && user.isSubmit == false) {
+      const signupToken = jwt.sign(payload, config.jwt.signUpSecretKey, options);
+
+      return res.json({
+        success: 'true',
+        step: 2,
+        message: 'Sign up completed',
+        data: {
+          signupToken,
+        },
+      });
+    }
+
+    const token = jwt.sign(payload, config.jwt.secretKey, options);
+
+    res.json({
+      success: 'true',
+      step: 1,
+      message: 'Login completed',
+      data: {
+        token,
+      },
+    });
+  })(req, res, next);
+};
+
+module.exports = {
+  isLogin,
+  signup,
+  kakaoCallback,
+};
