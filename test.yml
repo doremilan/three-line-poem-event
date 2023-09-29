@@ -1,0 +1,10 @@
+config:
+  target: 'http://localhost:포트번호'
+  phases:
+    - duration: 60 # 테스트 지속 시간 (초)
+      arrivalRate: 10 # 초당 요청 수
+
+scenarios:
+  - flow:
+      - get:
+          url: '/경로' # API 경로
