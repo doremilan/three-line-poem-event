@@ -99,6 +99,7 @@ const kakaoCallback = (req, res, next) => {
       const payload = { userId: user.userId };
 
       if (user.isSubmit == true) {
+        console.log('3');
         return res.json({
           success: 'true',
           step: 3,
@@ -107,6 +108,7 @@ const kakaoCallback = (req, res, next) => {
       }
 
       if (user.isSignup == true && user.isSubmit == false) {
+        console.log('2');
         const signupToken = jwt.sign(payload, config.jwt.signUpSecretKey, options);
 
         return res.json({
@@ -120,7 +122,7 @@ const kakaoCallback = (req, res, next) => {
       }
 
       const token = jwt.sign(payload, config.jwt.secretKey, options);
-
+      console.log(token);
       res.json({
         success: 'true',
         step: 1,
