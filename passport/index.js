@@ -29,6 +29,9 @@ module.exports = (app) => {
               //nickname: profile._json.properties.nickname,
               //profileImage: profile._json.properties.profile_image,
               snsId: profile.id,
+              isLogin: true,
+              isSingUp: false,
+              isSubmit: false,
             });
 
             done(null, newUser);
