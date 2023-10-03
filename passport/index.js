@@ -1,4 +1,4 @@
-const User = require('../models/user');
+const { User } = require('../models');
 const passport = require('passport');
 const KakaoStrategy = require('passport-kakao').Strategy;
 const config = require('../config');
@@ -15,7 +15,6 @@ module.exports = (app) => {
 
       async (accessToken, refreshToken, profile, done) => {
         try {
-          console.log('1:', profile);
           const user = await User.findOne({
             where: {
               email: profile._json.kakao_account.email,
@@ -29,12 +28,12 @@ module.exports = (app) => {
               email: profile._json.kakao_account.email,
               //nickname: profile._json.properties.nickname,
               //profileImage: profile._json.properties.profile_image,
-              snsId: profile.id,
+              snsName: profile.username,
               isLogin: true,
               isSingUp: false,
               isSubmit: false,
             });
-            console.log('2:', newUser);
+
             done(null, newUser);
           }
         } catch (ex) {

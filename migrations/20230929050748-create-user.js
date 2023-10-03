@@ -13,7 +13,7 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING,
       },
-      snsId: {
+      snsName: {
         type: Sequelize.STRING,
       },
       name: {
@@ -45,6 +45,7 @@ module.exports = {
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
+        defaultValue: Sequelize.DataTypes.NOW,
       },
     });
   },

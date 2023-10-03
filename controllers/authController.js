@@ -1,8 +1,32 @@
-const User = require('../models/user');
+const { User } = require('../models');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const config = require('../config');
 const dayjs = require('dayjs');
+
+const createUser = async (req, res) => {
+  try {
+    const newUser = await User.create({
+      email: 'test@email.com',
+      snsName: 'name',
+      isLogin: true,
+      isSingUp: false,
+      isSubmit: false,
+    });
+
+    res.status(200).json({
+      success: 'true',
+      step: 1,
+      message: 'Login completed',
+    });
+  } catch (ex) {
+    console.log(ex);
+    res.status(401).json({
+      success: 'false',
+      message: 'Authorization Exception',
+    });
+  }
+};
 
 const signup = async (req, res) => {
   try {
@@ -68,7 +92,7 @@ const kakaoCallback = (req, res, next) => {
   passport.authenticate('kakao', { failureRedirect: '/' }, (err, user) => {
     if (err) return next(err);
     try {
-      console.log('3:', user);
+      console.log('user:', user);
       const options = {
         expiresIn: config.jwt.expiresIn,
       };
@@ -115,4 +139,5 @@ module.exports = {
   isLogin,
   signup,
   kakaoCallback,
+  createUser,
 };

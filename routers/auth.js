@@ -3,7 +3,7 @@ const router = express.Router();
 const passport = require('passport');
 const authMiddleware = require('../middlewares/authMiddleware');
 
-const { signup, kakaoCallback, isLogin } = require('../controllers/authController');
+const { signup, kakaoCallback, isLogin, createUser } = require('../controllers/authController');
 
 // 카카오 로그인
 router.get('/kakao', kakaoCallback);
@@ -13,6 +13,9 @@ router.get('/kakao/callback', passport.authenticate('kakao'));
 router.get('/me', authMiddleware, isLogin);
 
 // 회원가입
-router.post('/signup', signup);
+router.post('/signup', authMiddleware, signup);
+
+// 테스트
+router.post('/', createUser);
 
 module.exports = router;

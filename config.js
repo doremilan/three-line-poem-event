@@ -13,12 +13,12 @@ module.exports = {
   host: {
     port: process.env.HOST_PORT,
   },
-  db: {
-    dbUserName: process.env.DB_USER_NAME,
-    dbPassword: process.env.DB_PASSWORD,
-    dbName: process.env.DB_NAME,
-    dbHost: process.env.DB_HOST,
-  },
+  // db: {
+  //   dbUserName: process.env.DB_USER_NAME,
+  //   dbPassword: process.env.DB_PASSWORD,
+  //   dbName: process.env.DB_NAME,
+  //   dbHost: process.env.DB_HOST,
+  // },
   // cors: {
   //   cors: process.env.CORS,
   // },
