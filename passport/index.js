@@ -5,7 +5,7 @@ const config = require('../config');
 
 module.exports = (app) => {
   app.use(passport.initialize());
-
+  consol.log(config.kakao.kakaoUrl);
   passport.use(
     new KakaoStrategy(
       {
