@@ -1,5 +1,4 @@
 'use strict';
-
 const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
@@ -9,7 +8,7 @@ const config = require('./config');
 
 const db = {};
 sequelize = new Sequelize(config.db.dbName, config.db.dbUserName, config.db.dbPassword, {
-  host: db.DB_HOST,
+  host: config.db.dbHost,
   dialect: 'mysql',
 });
 
