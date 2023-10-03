@@ -67,43 +67,47 @@ const isLogin = async (req, res) => {
 const kakaoCallback = (req, res, next) => {
   passport.authenticate('kakao', { failureRedirect: '/' }, (err, user) => {
     if (err) return next(err);
+    try {
+      console.log('3:', user);
+      const options = {
+        expiresIn: config.jwt.expiresIn,
+      };
+      const payload = { userId: user.userId };
 
-    const options = {
-      expiresIn: config.jwt.expiresIn,
-    };
-    const payload = { userId: user.userId };
+      if (user.isSubmit == true) {
+        return res.json({
+          success: 'true',
+          step: 3,
+          message: 'Submission completed',
+        });
+      }
 
-    if (user.isSubmit == true) {
-      return res.json({
+      if (user.isSignup == true && user.isSubmit == false) {
+        const signupToken = jwt.sign(payload, config.jwt.signUpSecretKey, options);
+
+        return res.json({
+          success: 'true',
+          step: 2,
+          message: 'Sign up completed',
+          data: {
+            signupToken,
+          },
+        });
+      }
+
+      const token = jwt.sign(payload, config.jwt.secretKey, options);
+
+      res.json({
         success: 'true',
-        step: 3,
-        message: 'Submission completed',
-      });
-    }
-
-    if (user.isSignup == true && user.isSubmit == false) {
-      const signupToken = jwt.sign(payload, config.jwt.signUpSecretKey, options);
-
-      return res.json({
-        success: 'true',
-        step: 2,
-        message: 'Sign up completed',
+        step: 1,
+        message: 'Login completed',
         data: {
-          signupToken,
+          token,
         },
       });
+    } catch (ex) {
+      console.log(ex);
     }
-
-    const token = jwt.sign(payload, config.jwt.secretKey, options);
-
-    res.json({
-      success: 'true',
-      step: 1,
-      message: 'Login completed',
-      data: {
-        token,
-      },
-    });
   })(req, res, next);
 };
 

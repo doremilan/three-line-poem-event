@@ -15,6 +15,7 @@ module.exports = (app) => {
 
       async (accessToken, refreshToken, profile, done) => {
         try {
+          console.log('1:', profile);
           const user = await User.findOne({
             where: {
               email: profile._json.kakao_account.email,
@@ -33,7 +34,7 @@ module.exports = (app) => {
               isSingUp: false,
               isSubmit: false,
             });
-
+            console.log('2:', newUser);
             done(null, newUser);
           }
         } catch (ex) {
