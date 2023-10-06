@@ -48,7 +48,7 @@ const signup = async (req, res) => {
       });
     }
 
-    if (user.isSignup == true && user.isSubmit == false) {
+    if (user.isSignUp == true && user.isSubmit == false) {
       const signupToken = jwt.sign(payload, config.jwt.signUpSecretKey, options);
 
       return res.json({
@@ -120,7 +120,7 @@ const kakaoCallback = (req, res, next) => {
         });
       }
 
-      if (user.isSignup == true && user.isSubmit == false) {
+      if (user.isSignUp == true && user.isSubmit == false) {
         console.log('2');
         const signupToken = jwt.sign(payload, config.jwt.signUpSecretKey, options);
 

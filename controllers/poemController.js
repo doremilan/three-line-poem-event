@@ -28,7 +28,7 @@ const createPoem = async (req, res) => {
 
     const { firstLine, secondLine, thirdLine } = req.body;
 
-    ThreeLinePoem.create({
+    await ThreeLinePoem.create({
       userId: payload.userId,
       firstLine,
       secondLine,
