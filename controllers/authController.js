@@ -46,7 +46,7 @@ const signup = async (req, res) => {
     user.name = name;
     user.address = address;
     user.phone = Number(phone);
-    user.isSignup = true;
+    user.isSignUp = true;
     user.updatedAt = dayjs().toDate();
 
     await user.save();
