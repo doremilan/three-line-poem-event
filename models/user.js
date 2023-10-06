@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
       email: DataTypes.STRING(100),
       snsName: DataTypes.STRING(50),
       name: DataTypes.STRING(50),
-      adress: DataTypes.STRING(100),
+      address: DataTypes.STRING(100),
       phone: DataTypes.INTEGER(30),
       isLogin: DataTypes.BOOLEAN,
       isSignUp: DataTypes.BOOLEAN,

@@ -31,7 +31,7 @@ const createUser = async (req, res) => {
 const signup = async (req, res) => {
   try {
     const { userId } = res.locals.user;
-    const { name, adress, phone } = res.body;
+    const { name, address, phone } = res.body;
 
     const user = await User.findByPk(userId);
 
@@ -44,7 +44,7 @@ const signup = async (req, res) => {
     }
 
     user.name = name;
-    user.adress = adress;
+    user.address = address;
     user.phone = phone;
     user.isSignup = true;
     user.updatedAt = dayjs().toDate();
