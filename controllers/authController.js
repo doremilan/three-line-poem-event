@@ -45,11 +45,11 @@ const signup = async (req, res) => {
 
     user.name = name;
     user.address = address;
-    user.phone = phone;
+    user.phone = Number(phone);
     user.isSignup = true;
     user.updatedAt = dayjs().toDate();
 
-    User.save();
+    await user.save();
 
     const options = {
       expiresIn: config.jwt.expiresIn,
