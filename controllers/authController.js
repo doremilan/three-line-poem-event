@@ -63,7 +63,7 @@ const signup = async (req, res) => {
 
     user.name = name;
     user.address = address;
-    user.phone = Number(phone);
+    user.phone = phone;
     user.isSignUp = true;
     user.updatedAt = dayjs().toDate();
 
