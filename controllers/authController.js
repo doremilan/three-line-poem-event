@@ -54,7 +54,8 @@ const signup = async (req, res) => {
     const options = {
       expiresIn: config.jwt.expiresIn,
     };
-    const signupToken = jwt.sign(userId, config.jwt.signUpSecretKey, options);
+    const payload = { userId: userId };
+    const signupToken = jwt.sign(payload, config.jwt.signUpSecretKey, options);
 
     res.status(201).json({
       success: 'true',
@@ -92,7 +93,6 @@ const kakaoCallback = (req, res, next) => {
   passport.authenticate('kakao', { failureRedirect: '/' }, (err, user) => {
     if (err) return next(err);
     try {
-      console.log('user:', user);
       const options = {
         expiresIn: config.jwt.expiresIn,
       };
