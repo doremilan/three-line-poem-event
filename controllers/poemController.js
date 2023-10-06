@@ -35,6 +35,9 @@ const createPoem = async (req, res) => {
       thirdLine,
     });
 
+    user.isSubmit = true;
+    await user.save();
+
     res.status(200).json({
       success: 'true',
       step: 3,
