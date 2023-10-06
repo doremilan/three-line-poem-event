@@ -18,13 +18,11 @@ const createPoem = async (req, res) => {
     const payload = jwt.verify(authToken, config.jwt.signUpSecretKey);
 
     const user = await User.findByPk(payload.userId);
-    console.log(user);
-    if (user.isSubmit) {
-      console.log('check');
+    if (user.isSubmit == true) {
       return res.json({
         success: 'true',
-        step: 3,
-        message: 'Submission completed',
+        step: 4,
+        message: 'already Submission completed',
       });
     }
 
