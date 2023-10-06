@@ -31,7 +31,7 @@ const createUser = async (req, res) => {
 const signup = async (req, res) => {
   try {
     const { userId } = res.locals.user;
-    const { name, address, phone } = res.body;
+    const { name, address, phone } = req.body;
 
     const user = await User.findByPk(userId);
 
