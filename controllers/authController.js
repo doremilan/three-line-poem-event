@@ -35,11 +35,29 @@ const signup = async (req, res) => {
 
     const user = await User.findByPk(userId);
 
+    const options = {
+      expiresIn: config.jwt.expiresIn,
+    };
+    const payload = { userId: userId };
+
     if (user.isSubmit == true) {
       res.json({
         success: 'true',
         step: 3,
         message: 'Submission completed',
+      });
+    }
+
+    if (user.isSignup == true && user.isSubmit == false) {
+      const signupToken = jwt.sign(payload, config.jwt.signUpSecretKey, options);
+
+      return res.json({
+        success: 'true',
+        step: 2,
+        message: 'Sign up completed',
+        data: {
+          signupToken,
+        },
       });
     }
 
@@ -50,11 +68,6 @@ const signup = async (req, res) => {
     user.updatedAt = dayjs().toDate();
 
     await user.save();
-
-    const options = {
-      expiresIn: config.jwt.expiresIn,
-    };
-    const payload = { userId: userId };
     const signupToken = jwt.sign(payload, config.jwt.signUpSecretKey, options);
 
     res.status(201).json({
