@@ -1,3 +1,7 @@
+const { User } = require('../models');
+const jwt = require('jsonwebtoken');
+const config = require('../config');
+
 const createPoem = async (req, res) => {
   try {
     const { authorization } = req.headers;
@@ -11,6 +15,15 @@ const createPoem = async (req, res) => {
     }
 
     const payload = jwt.verify(authToken, config.jwt.signUpSecretKey);
+
+    const user = await User.findByPk(payload.userId);
+    if (user.isSubmit == true) {
+      return res.json({
+        success: 'true',
+        step: 3,
+        message: 'Submission completed',
+      });
+    }
 
     const { firstLine, secondLine, thirdLine } = req.body;
 
