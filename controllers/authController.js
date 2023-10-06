@@ -30,6 +30,7 @@ const createUser = async (req, res) => {
 
 const signup = async (req, res) => {
   try {
+    console.log('locals: ', res.locals.user);
     const { userId } = res.locals.user;
     const { name, address, phone } = req.body;
 
@@ -106,6 +107,7 @@ const kakaoCallback = (req, res, next) => {
   passport.authenticate('kakao', { failureRedirect: '/' }, (err, user) => {
     if (err) return next(err);
     try {
+      console.log('kakaoCallback: ', user);
       const options = {
         expiresIn: config.jwt.expiresIn,
       };
@@ -135,7 +137,7 @@ const kakaoCallback = (req, res, next) => {
       }
 
       const token = jwt.sign(payload, config.jwt.secretKey, options);
-      console.log(token);
+
       res.json({
         success: 'true',
         step: 1,
