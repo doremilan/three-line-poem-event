@@ -14,13 +14,15 @@ module.exports = (app) => {
 
       async (accessToken, refreshToken, profile, done) => {
         try {
+          console.log('1. 카카오 로그인 시작');
           const user = await User.findOne({
             where: {
               email: profile._json.kakao_account.email,
             },
           });
-
+          console.log('2. 유저 체크:', user);
           if (user) {
+            console.log('2-1. 유저 유형: 기존 유저');
             done(null, user);
           } else {
             const newUser = await User.create({
@@ -32,6 +34,7 @@ module.exports = (app) => {
               isSingUp: false,
               isSubmit: false,
             });
+            console.log('2-2. 유저 유형: 신규 유저', newUser);
 
             done(null, newUser);
           }

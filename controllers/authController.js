@@ -30,10 +30,12 @@ const createUser = async (req, res) => {
 
 const signup = async (req, res) => {
   try {
+    console.log('5. 회원가입 시작');
     const { userId } = res.locals.user;
     const { name, address, phone } = req.body;
 
     const user = await User.findByPk(userId);
+    console.log('5-1. 회원가입 유저확인:', user.userId);
 
     const options = {
       expiresIn: config.jwt.expiresIn,
@@ -41,6 +43,7 @@ const signup = async (req, res) => {
     const payload = { userId: userId };
 
     if (user.isSubmit == true) {
+      console.log('5-2. 회원가입 유저유형: 제출 완료 유저', user.userId);
       res.json({
         success: 'true',
         step: 3,
@@ -50,7 +53,7 @@ const signup = async (req, res) => {
 
     if (user.isSignUp == true && user.isSubmit == false) {
       const signupToken = jwt.sign(payload, config.jwt.signUpSecretKey, options);
-
+      console.log('5-3. 회원가입 유저유형: 회원가입 완료 유저', user.userId);
       return res.json({
         success: 'true',
         step: 2,
@@ -66,7 +69,7 @@ const signup = async (req, res) => {
     user.phone = phone;
     user.isSignUp = true;
     user.updatedAt = dayjs().toDate();
-
+    console.log('5-3. 회원가입 유저유형: 신규 회원가입 유저', user);
     await user.save();
     const signupToken = jwt.sign(payload, config.jwt.signUpSecretKey, options);
 
@@ -106,13 +109,14 @@ const kakaoCallback = (req, res, next) => {
   passport.authenticate('kakao', { failureRedirect: '/' }, (err, user) => {
     if (err) return next(err);
     try {
+      console.log('3. 카카오 콜백 시작');
       const options = {
         expiresIn: config.jwt.expiresIn,
       };
       const payload = { userId: user.userId };
 
       if (user.isSubmit == true) {
-        console.log('3');
+        console.log('3-1. 유저 체크: 제출 완료 유저', user.userId);
         return res.json({
           success: 'true',
           step: 3,
@@ -121,7 +125,7 @@ const kakaoCallback = (req, res, next) => {
       }
 
       if (user.isSignUp == true && user.isSubmit == false) {
-        console.log('2');
+        console.log('3-2. 유저 체크: 회원가입 완료 유저', user.userId);
         const signupToken = jwt.sign(payload, config.jwt.signUpSecretKey, options);
 
         return res.json({
@@ -135,7 +139,7 @@ const kakaoCallback = (req, res, next) => {
       }
 
       const token = jwt.sign(payload, config.jwt.secretKey, options);
-
+      console.log('3-3. 유저 체크: 카카오 로그인 완료 유저', user.userId);
       res.json({
         success: 'true',
         step: 1,
