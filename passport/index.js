@@ -25,7 +25,7 @@ module.exports = (app) => {
             console.log('2-1. 유저 유형: 기존 유저');
             done(null, user);
           } else {
-            const newUser = await User.create({
+            await User.create({
               email: profile._json.kakao_account.email,
               //nickname: profile._json.properties.nickname,
               //profileImage: profile._json.properties.profile_image,
@@ -33,6 +33,12 @@ module.exports = (app) => {
               isLogin: true,
               isSingUp: false,
               isSubmit: false,
+            });
+
+            const newUser = await User.findOne({
+              where: {
+                email: profile._json.kakao_account.email,
+              },
             });
             console.log('2-2. 유저 유형: 신규 유저', newUser);
 
