@@ -9,25 +9,20 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      email: {
-        allowNull: false,
-        type: Sequelize.STRING,
-      },
-      snsName: {
-        type: Sequelize.STRING,
-      },
       name: {
-        type: Sequelize.STRING,
-      },
-      adress: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(15),
       },
       phone: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.INTEGER(15),
       },
-      isLogin: {
-        allowNull: false,
-        type: Sequelize.BOOLEAN,
+      firstLine: {
+        type: Sequelize.STRING(50),
+      },
+      secondLine: {
+        type: Sequelize.STRING(50),
+      },
+      thirdLine: {
+        type: Sequelize.STRING(50),
       },
       isSignUp: {
         allowNull: false,

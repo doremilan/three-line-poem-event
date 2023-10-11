@@ -2,12 +2,9 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
-const passport = require('./passport');
 const config = require('./config');
 const indexRouter = require('./routers/index');
 const app = express();
-
-passport(app);
 
 app.use(cors());
 

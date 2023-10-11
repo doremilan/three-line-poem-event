@@ -4,12 +4,12 @@ const config = require('../config.js');
 
 module.exports = (req, res, next) => {
   try {
-    console.log('4. 미들웨어 토큰검증 시작');
+    console.log('2. 미들웨어 토큰검증 시작');
     const { authorization } = req.headers;
     const [authType, authToken] = (authorization || '').split(' ');
 
     if (!authToken || authType !== 'Bearer') {
-      console.log('4-1. 예외처리: 토큰이 없거나 잘못된 경우');
+      console.log('2-1. 예외처리: 토큰이 없거나 잘못된 경우');
       return res.status(401).send({
         success: 'false',
         message: 'Authorization Exception',
@@ -17,9 +17,9 @@ module.exports = (req, res, next) => {
     }
 
     const payload = jwt.verify(authToken, config.jwt.secretKey);
-    console.log('4-2. 토큰 검증, 유저확인:', payload);
+    console.log('2-2. 토큰 검증, 유저확인:', payload.userId);
     User.findByPk(payload.userId).then((user) => {
-      console.log('4-3. 토큰 검증, 유저조회 결과:', user);
+      console.log('2-3. 토큰 검증, 유저조회 결과:', user.userId);
       res.locals.user = user;
       next();
     });
