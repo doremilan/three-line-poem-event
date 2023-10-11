@@ -53,5 +53,4 @@ const isLogin = async (req, res) => {
 module.exports = {
   isLogin,
   signup,
-  createUser,
 };
