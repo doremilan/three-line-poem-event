@@ -1,8 +1,13 @@
 const { User } = require('../models');
 const jwt = require('jsonwebtoken');
 const config = require('../config');
-const dayjs = require('dayjs');
 const { v4: uuidv4 } = require('uuid');
+const cache = require('memory-cache');
+const dayjs = require('dayjs');
+const localizedFormat = require('dayjs/plugin/localizedFormat');
+dayjs.extend(localizedFormat);
+const locale = require('dayjs/locale/ko');
+dayjs.locale(locale);
 
 const signup = async (req, res) => {
   try {
@@ -51,47 +56,70 @@ const isLogin = async (req, res) => {
 
 const getUsers = async (req, res) => {
   try {
-    const { page, size } = req.query;
+    const cachedData = cache.get('key');
 
-    const totalUsers = await User.findAll();
+    if (cachedData) {
+      console.log('있덩');
+      const parsedData = JSON.parse(cachedData);
 
-    if (totalUsers.length == 0) {
       return res.status(200).json({
         success: 'true',
         data: {
-          total: 0,
+          total: parsedData.total,
           updatedAt: dayjs().format('YYYY/MM/DD HH:mm:ss'),
-          userList: [],
+          userList: parsedData.userList,
+        },
+      });
+    } else {
+      console.log('없덩');
+      const { page, size } = req.query;
+      const totalUsers = await User.findAll();
+
+      if (totalUsers.length == 0) {
+        const value = { total: 0, userList: [] };
+        cache.put('key', JSON.stringify(value), 10000);
+
+        return res.status(200).json({
+          success: 'true',
+          data: {
+            total: 0,
+            updatedAt: dayjs().format('YYYY/MM/DD HH:mm:ss'),
+            userList: [],
+          },
+        });
+      }
+
+      const users = await User.findAll({
+        limit: Number(size),
+        offset: (Number(page) - 1) * Number(size),
+        order: [['createdAt', 'DESC']],
+      });
+
+      const results = await users.map((item) => {
+        const formattedDate = dayjs(item.createdAt).format('YYYY/MM/DD HH:mm:ss');
+
+        return {
+          name: item.name,
+          phone: item.phone,
+          firstLine: item.firstLine,
+          secondLine: item.secondLine,
+          thirdLine: item.thirdLine,
+          createdAt: formattedDate,
+        };
+      });
+
+      const value = { total: totalUsers.length, userList: results };
+      cache.put('key', JSON.stringify(value), 10000);
+
+      res.status(200).json({
+        success: 'true',
+        data: {
+          total: value.total,
+          updatedAt: dayjs().format('YYYY/MM/DD HH:mm:ss'),
+          userList: value.userList,
         },
       });
     }
-
-    const users = await User.findAll({
-      limit: Number(size),
-      offset: (Number(page) - 1) * Number(size),
-    });
-
-    const results = await users.map((item) => {
-      const formattedDate = dayjs(item.createdAt).format('YYYY/MM/DD HH:mm:ss');
-
-      return {
-        name: item.name,
-        phone: item.phone,
-        firstLine: item.firstLine,
-        secondLine: item.secondLine,
-        thirdLine: item.thirdLine,
-        createdAt: formattedDate,
-      };
-    });
-
-    res.status(200).json({
-      success: 'true',
-      data: {
-        total: totalUsers.length,
-        updatedAt: dayjs().format('YYYY/MM/DD HH:mm:ss'),
-        userList: results,
-      },
-    });
   } catch (ex) {
     res.status(400).json({
       success: 'false',
