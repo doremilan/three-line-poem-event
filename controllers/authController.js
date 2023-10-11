@@ -1,6 +1,7 @@
 const { User } = require('../models');
 const jwt = require('jsonwebtoken');
 const config = require('../config');
+const dayjs = require('dayjs');
 
 const signup = async (req, res) => {
   try {
@@ -50,7 +51,40 @@ const isLogin = async (req, res) => {
   }
 };
 
+const getUsers = async (req, res) => {
+  try {
+    const users = await User.findAll();
+
+    const results = await users.map((item) => {
+      const formattedDate = dayjs(item.createdAt).format('YYYY/MM/DD HH:mm:ss');
+
+      return {
+        name: item.name,
+        phone: item.phone,
+        firstLine: item.firstLine,
+        secondLine: item.secondLine,
+        thirdLine: item.thirdLine,
+        createdAt: formattedDate,
+      };
+    });
+
+    res.status(200).json({
+      success: 'true',
+      data: {
+        updatedAt: dayjs().format('YYYY/MM/DD HH:mm:ss'),
+        userList: results,
+      },
+    });
+  } catch (ex) {
+    res.status(400).json({
+      success: 'false',
+      message: ex.message,
+    });
+  }
+};
+
 module.exports = {
   isLogin,
   signup,
+  getUsers,
 };
