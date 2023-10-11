@@ -2,23 +2,21 @@ const { User } = require('../models');
 const jwt = require('jsonwebtoken');
 const config = require('../config');
 const dayjs = require('dayjs');
+const { v4: uuidv4 } = require('uuid');
 
 const signup = async (req, res) => {
   try {
     console.log('1. 회원가입 시작');
     const { name, phone } = req.body;
+    const uuid = uuidv4();
 
-    await User.create({ name: name, phone: phone, isSignUp: true, isSubmit: false });
-
-    const newUser = await User.findOne({
-      where: { phone },
-    });
-    console.log('1-1. 신규 유저 등록 완료: ', newUser.userId);
+    const newUser = await User.create({ uuid: uuid, name: name, phone: phone, isSignUp: true, isSubmit: false });
+    console.log('1-1. 신규 유저 등록 완료: ', newUser.uuid);
 
     const options = {
       expiresIn: config.jwt.expiresIn,
     };
-    const payload = { userId: newUser.userId };
+    const payload = { userId: newUser.uuid };
     const signupToken = jwt.sign(payload, config.jwt.signUpSecretKey, options);
 
     res.status(201).json({
@@ -53,7 +51,25 @@ const isLogin = async (req, res) => {
 
 const getUsers = async (req, res) => {
   try {
-    const users = await User.findAll();
+    const { page, size } = req.query;
+
+    const totalUsers = await User.findAll();
+
+    if (totalUsers.length == 0) {
+      return res.status(200).json({
+        success: 'true',
+        data: {
+          total: 0,
+          updatedAt: dayjs().format('YYYY/MM/DD HH:mm:ss'),
+          userList: [],
+        },
+      });
+    }
+
+    const users = await User.findAll({
+      limit: Number(size),
+      offset: (Number(page) - 1) * Number(size),
+    });
 
     const results = await users.map((item) => {
       const formattedDate = dayjs(item.createdAt).format('YYYY/MM/DD HH:mm:ss');
@@ -71,6 +87,7 @@ const getUsers = async (req, res) => {
     res.status(200).json({
       success: 'true',
       data: {
+        total: totalUsers.length,
         updatedAt: dayjs().format('YYYY/MM/DD HH:mm:ss'),
         userList: results,
       },

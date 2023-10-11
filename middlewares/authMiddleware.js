@@ -18,7 +18,8 @@ module.exports = (req, res, next) => {
 
     const payload = jwt.verify(authToken, config.jwt.secretKey);
     console.log('2-2. 토큰 검증, 유저확인:', payload.userId);
-    User.findByPk(payload.userId).then((user) => {
+
+    User.findOne({ where: { uuid: payload.userId } }).then((user) => {
       console.log('2-3. 토큰 검증, 유저조회 결과:', user.userId);
       res.locals.user = user;
       next();
