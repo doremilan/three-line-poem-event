@@ -17,7 +17,7 @@ const signup = async (req, res) => {
     const options = {
       expiresIn: config.jwt.expiresIn,
     };
-    const payload = { userId: exsistedUser.userId };
+    const payload = { userId: newUser.userId };
     const signupToken = jwt.sign(payload, config.jwt.signUpSecretKey, options);
 
     res.status(201).json({
