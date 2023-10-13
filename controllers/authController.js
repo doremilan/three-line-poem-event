@@ -53,8 +53,10 @@ const isLogin = async (req, res) => {
 };
 
 const getUsers = async (req, res) => {
+  const { page, size } = req.query;
+
   try {
-    const cachedData = cache.get('key');
+    const cachedData = cache.get(`${page}`);
 
     if (cachedData) {
       console.log('있덩');
@@ -70,12 +72,11 @@ const getUsers = async (req, res) => {
       });
     } else {
       console.log('없덩');
-      const { page, size } = req.query;
       const totalUsers = await User.findAll();
 
       if (totalUsers.length == 0) {
         const value = { total: 0, userList: [] };
-        cache.put('key', JSON.stringify(value), 10000);
+        cache.put(`${page}`, JSON.stringify(value), 10000);
 
         return res.status(200).json({
           success: 'true',
@@ -107,7 +108,7 @@ const getUsers = async (req, res) => {
       });
 
       const value = { total: totalUsers.length, userList: results };
-      cache.put('key', JSON.stringify(value), 10000);
+      cache.put(`${page}`, JSON.stringify(value), 10000);
 
       res.status(200).json({
         success: 'true',
