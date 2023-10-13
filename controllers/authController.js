@@ -6,8 +6,6 @@ const cache = require('memory-cache');
 const dayjs = require('dayjs');
 const localizedFormat = require('dayjs/plugin/localizedFormat');
 dayjs.extend(localizedFormat);
-const locale = require('dayjs/locale/ko');
-dayjs.locale(locale);
 
 const signup = async (req, res) => {
   try {
@@ -66,7 +64,7 @@ const getUsers = async (req, res) => {
         success: 'true',
         data: {
           total: parsedData.total,
-          updatedAt: dayjs().format('YYYY/MM/DD HH:mm:ss'),
+          updatedAt: dayjs().add(9, 'hour').format('YYYY/MM/DD HH:mm:ss'),
           userList: parsedData.userList,
         },
       });
@@ -83,7 +81,7 @@ const getUsers = async (req, res) => {
           success: 'true',
           data: {
             total: 0,
-            updatedAt: dayjs().format('YYYY/MM/DD HH:mm:ss'),
+            updatedAt: dayjs().add(9, 'hour').format('YYYY/MM/DD HH:mm:ss'),
             userList: [],
           },
         });
@@ -96,7 +94,7 @@ const getUsers = async (req, res) => {
       });
 
       const results = await users.map((item) => {
-        const formattedDate = dayjs(item.createdAt).format('YYYY/MM/DD HH:mm:ss');
+        const formattedDate = dayjs(item.createdAt).add(9, 'hour').format('YYYY/MM/DD HH:mm:ss');
 
         return {
           name: item.name,
@@ -115,7 +113,7 @@ const getUsers = async (req, res) => {
         success: 'true',
         data: {
           total: value.total,
-          updatedAt: dayjs().format('YYYY/MM/DD HH:mm:ss'),
+          updatedAt: dayjs().add(9, 'hour').format('YYYY/MM/DD HH:mm:ss'),
           userList: value.userList,
         },
       });
